@@ -1,14 +1,31 @@
-STUID = 181220000
-STUNAME = 张三
+STUID = 19190248
+STUNAME = 蒋泽
 
 # DO NOT modify the following code!!!
-
+# 设置Git提交的参数，包括：
+# -q: 静默模式，减少输出信息
+# --author='tracer-ics2019 <tracer@njuics.org>': 指定提交的作者信息
+# --no-verify: 禁止执行提交前的钩子验证
+# --allow-empty: 允许提交空的改动
 GITFLAGS = -q --author='tracer-ics2019 <tracer@njuics.org>' --no-verify --allow-empty
 
-# prototype: git_commit(msg)
+# 定义一个Makefile函数git_commit，用于提交Git变更
 define git_commit
-	-@git add .. -A --ignore-errors
-	-@while (test -e .git/index.lock); do sleep 0.1; done
-	-@(echo "> $(1)" && echo $(STUID) && id -un && uname -a && uptime && (head -c 20 /dev/urandom | hexdump -v -e '"%02x"') && echo) | git commit -F - $(GITFLAGS)
-	-@sync
+        # 添加所有修改的文件到Git暂存区，忽略可能存在的错误
+        -@git add .. -A --ignore-errors
+        # 等待.git/index.lock文件不再存在，表示上一步操作已完成
+        -@while (test -e .git/index.lock); do sleep 0.1; done
+        # 构造提交消息并提交：
+        #   - echo "> $(1)": 打印提交消息
+        #   - echo $(STUID): 打印当前用户ID
+        #   - id -un: 打印当前用户名
+        #   - uname -a: 打印系统信息
+        #   - uptime: 打印系统运行时间
+        #   - (head -c 20 /dev/urandom | hexdump -v -e '"%02x"'): 生成20个随机字符
+        #   - echo: 输出一个空行，用于分隔
+        # 最后将以上信息通过管道传递给git commit命令，使用GITFLAGS设置的参数
+        -@(echo "> $(1)" && echo $(STUID) && id -un && uname -a && uptime && (head -c 20 /dev/urandom | hexdump -v -e '"%02x"') && echo) | git commit -F - $(GITFLAGS)
+        # 等待文件系统同步操作完成
+        -@sync
 endef
+
