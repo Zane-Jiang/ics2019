@@ -89,7 +89,7 @@ $(BINARY): $(OBJS)
 run-env: $(BINARY) $(QEMU_SO)
 
 run: run-env
-	$(call git_commit, "run")
+# $(call git_commit, "run")
 	$(NEMU_EXEC)
 
 # 调试NEMU
